@@ -7,6 +7,32 @@
     <!--    <link rel="stylesheet" href="styles.css">-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination-btn {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #4c6ef5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .pagination-btn:hover {
+            background-color: #3b5bdb;
+        }
+
+        .pagination-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -235,7 +261,13 @@
             <tbody>
             <!-- Записи будут добавляться сюда -->
             </tbody>
+
         </table>
+        <div class="pagination block-section">
+            <button id="prevPage" class="pagination-btn" onclick="prevPage()">Назад</button>
+            <span>Номер страницы: </span><span id="pageNum">1</span>
+            <button id="nextPage" class="pagination-btn" onclick="nextPage()">Вперед</button>
+        </div>
     </div>
 </div>
 

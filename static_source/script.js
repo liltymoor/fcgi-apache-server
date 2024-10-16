@@ -48,7 +48,7 @@ function addTableRow(hitObject) {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td>${rowNumber}</td>
+        <td>${hitObject.idx}</td>
         <td>${hitObject.x}</td>
         <td>${hitObject.y}</td>
         <td>${hitObject.r}</td>
@@ -64,9 +64,9 @@ function getPageContent(pageNum) {
     const content = [];
 
     for (let i = 0; i < pageContentLen; i++) {
-        const hitObject = localStorage.getItem(pageNum * pageContentLen + i);
+        const hitObject = JSON.parse(localStorage.getItem(pageNum * pageContentLen + i));
         if (hitObject === null) return content;
-
+        hitObject.idx = pageNum * pageContentLen + i;
         content.push(hitObject);
     }
 
@@ -84,26 +84,47 @@ function setTableContent(pageNum) {
 }
 
 function addToStorage(hitObject) {
-    localStorage.setItem(lastHitIdx.toString(), hitObject);
+    localStorage.setItem(lastHitIdx.toString(), JSON.stringify(hitObject));
     lastHitIdx++;
 }
 
 function isActualElement(elementIndex) {
     if (elementIndex < lastHitIdx) return;
-    return ((elementIndex % pageContentLen) + (pageNumber * pageContentLen)) < pageContentLen * (pageNumber + 1);
+    const pageLowerBound = pageNumber * pageContentLen;
+    return pageLowerBound <= elementIndex && elementIndex < pageLowerBound + pageContentLen;
 }
 
 function nextPage() {
     if (lastHitIdx < (pageNumber + 1) * pageContentLen) return;
-    setTableContent(pageNumber++);
+    setTableContent(++pageNumber);
+    document.getElementById('pageNum').innerText = pageNumber + 1;
 }
 
 function prevPage() {
     if (pageNumber === 0) return;
-    setTableContent(pageNumber--);
+    setTableContent(--pageNumber);
+    document.getElementById('pageNum').innerText = pageNumber + 1;
+}
+
+function testAddElement() {
+    const hitObject = new HitData(1, 2, 3, true, 0.1, "2021-10-10");
+    const isActual = isActualElement(lastHitIdx);
+    console.log(isActual)
+    if (isActual) {
+        addToStorage(hitObject);
+        setTableContent(pageNumber);
+        return;
+    }
+    pageNumber++;
+    addToStorage(hitObject);
+    setTableContent(pageNumber);
+    document.getElementById('pageNum').innerText = pageNumber + 1;
+
 }
 
 $(document).ready(function () {
+    lastHitIdx = localStorage.length;
+    setTableContent(0);
 
     $('#x-buttons button').on('click', function () {
         const value = $(this).data('value');
@@ -137,14 +158,15 @@ $(document).ready(function () {
             success: function (response) {
                 response = JSON.parse(response)
                 const hitObject = new HitData(x,y,r, response.intersects, response.exec_time / 1000000, response.exec_date);
-                addTableRow(hitObject);
                 if (isActualElement(lastHitIdx)) {
                     addToStorage(hitObject);
                     setTableContent(pageNumber);
                     return;
                 }
+                pageNumber++;
                 addToStorage(hitObject);
-                setTableContent(pageNumber++);
+                setTableContent(pageNumber);
+                document.getElementById('pageNum').innerText = pageNumber + 1;
             },
             error: function (e) {
                 alert("Ошибка при отправке данных. | " + JSON.stringify(e));
