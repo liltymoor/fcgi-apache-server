@@ -27,7 +27,7 @@ public class Main {
     }
 
 
-    private static boolean checkIfDotBelongsToFigure(int x, int y, int r) {
+    private static boolean checkIfDotBelongsToFigure(float x, float y, float r) {
         // окружность
         if (x >= 0 && y >= 0 && (x * x + y * y <= r * r)) return true;
 
@@ -64,9 +64,11 @@ public class Main {
                 for (int i = 0; i < splitted_data.length; i++)
                     xyr_data[i] = splitted_data[i].split("=")[1];
 
-                int x = Integer.parseInt(xyr_data[0]);
-                int y = Integer.parseInt(xyr_data[1]);
-                int r = Integer.parseInt(xyr_data[2]);
+                float x = Float.parseFloat(xyr_data[0]);
+                float y = Float.parseFloat(xyr_data[1]);
+                float r = Float.parseFloat(xyr_data[2]);
+
+
 
                 String intersects = "Нет";
                 if (checkIfDotBelongsToFigure(x, y, r)) intersects = "Да";

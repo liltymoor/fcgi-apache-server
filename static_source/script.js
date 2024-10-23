@@ -149,6 +149,15 @@ $(document).ready(function () {
         const y = $("#y").val();
         const r = $("#r").val();
 
+        const regex = /^-?\d+(\.\d+)?$/;
+
+        if (!regex.test(x))
+            return;
+        if (!regex.test(y))
+            return;
+        if (regex.test(r))
+            return;
+
         $.ajax({
             url: "/fcgi-bin/fast-cgi-timmie.jar",
             type: "POST",
