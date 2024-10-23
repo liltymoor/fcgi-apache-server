@@ -80,7 +80,9 @@ function setTableContent(pageNum) {
     tableBody.innerHTML = ''; // clear table
 
     const content = getPageContent(pageNum);
-    content.forEach((hitObject) => addTableRow(hitObject));
+    for (let i = content.length; i >= 0; i--)
+        addTableRow(content[i]);
+    // content.forEach((hitObject) => addTableRow(hitObject));
 }
 
 function addToStorage(hitObject) {
