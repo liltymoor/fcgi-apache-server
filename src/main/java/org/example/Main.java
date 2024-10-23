@@ -27,15 +27,15 @@ public class Main {
     }
 
 
-    private static boolean checkIfDotBelongsToFigure(float x, float y, float r) {
+    private static boolean checkIfDotBelongsToFigure(int x, float y, int r) {
         // окружность
         if (x >= 0 && y >= 0 && (x * x + y * y <= r * r)) return true;
 
         // треугольник
-        if ((x + 1 + r) / 2 <= y && x <= 0 && y >= 0) return true;
+        if ((float) (x + 1 + r) / 2 <= y && x <= 0 && y >= 0) return true;
 
         // прямоугольник
-        if (y <= 0 && x >= -r && x <= 0 && y >= -r/2) return true;
+        if (y <= 0 && x >= -r && x <= 0 && y >= (float) -r /2) return true;
 
         return false;
     }
@@ -52,6 +52,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        initHeaders();
+
         var fcgiInterface = new FCGIInterface();
         while (fcgiInterface.FCGIaccept() >= 0) {
             LocalDate requestGotTime = LocalDate.now();
@@ -64,9 +66,9 @@ public class Main {
                 for (int i = 0; i < splitted_data.length; i++)
                     xyr_data[i] = splitted_data[i].split("=")[1];
 
-                float x = Float.parseFloat(xyr_data[0]);
+                int x = Integer.parseInt(xyr_data[0]);
                 float y = Float.parseFloat(xyr_data[1]);
-                float r = Float.parseFloat(xyr_data[2]);
+                int r = Integer.parseInt(xyr_data[2]);
 
 
 
