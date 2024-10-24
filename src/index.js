@@ -171,7 +171,7 @@ $(document).ready(function () {
         const regex = /^[+-]?\d+(\.\d+)?$/;
 
         if (!regex.test(y)) {
-            window.toast.error("Wrong data passed!");
+            window.toast.error("Неверный ввод");
             return;
         }
 
@@ -197,7 +197,7 @@ $(document).ready(function () {
                 document.getElementById('pageNum').innerText = pageNumber + 1;
             },
             error: function (e) {
-                alert("Ошибка при отправке данных. | " + JSON.stringify(e));
+                window.toast.error("говнищеСерв дохлый")
             }
         });
     });
