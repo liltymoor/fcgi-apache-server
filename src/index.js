@@ -1,3 +1,21 @@
+import _ from 'lodash';
+import 'toastr/build/toastr.css';
+import 'toastr/build/toastr.min.css';
+
+const toast = await import('toastr');
+window.toast = toast;
+
+// function component() {
+//     const element = document.createElement('div');
+//
+//     // Lodash, currently included via a script, is required for this line to work
+//     element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+//
+//     return element;
+// }
+//
+// document.body.appendChild(component());
+
 // собрать вебпаком весь калл в один бандл обфусицированный минифицированный и его закинуть в статику
 var lastHitIdx      = 0;
 var pageNumber      = 0;
@@ -152,8 +170,10 @@ $(document).ready(function () {
 
         const regex = /^[+-]?\d+(\.\d+)?$/;
 
-        if (!regex.test(y))
+        if (!regex.test(y)) {
+            window.toast.error("Wrong data passed!");
             return;
+        }
 
         $.ajax({
             url: "/fcgi-bin/fast-cgi-timmie.jar",

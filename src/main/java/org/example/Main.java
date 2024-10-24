@@ -75,7 +75,6 @@ public class Main {
 
     public static void main(String[] args) {
         initHeaders();
-        System.out.println(res(500, "{hi"));
         var fcgiInterface = new FCGIInterface();
         while (fcgiInterface.FCGIaccept() >= 0) {
             LocalDate requestGotTime = LocalDate.now();
