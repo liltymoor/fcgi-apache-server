@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
 import static com.fastcgi.FCGIInterface.request;
+import static java.lang.Math.abs;
 
 public class Main {
     private final static HashMap<Integer, String> statusHeaders = new HashMap<>();
@@ -19,23 +21,43 @@ public class Main {
     }
 
     private static void initHeaders() {
-        statusHeaders.put(200, "HTTP/1.1 200 OK\n" + "             Content-Type: text/html\n" + "             Content-Length: %d\n" + "            \n" + "             %s");
-        statusHeaders.put(403, "HTTP/1.1 403 Forbidden\n" + "             Content-Type: text/html\n" + "             Content-Length: %d\n" + "            \n" + "             %s");
-        statusHeaders.put(404, "HTTP/1.1 404 Not Found\n" + "             Content-Type: text/html\n" + "             Content-Length: %d\n" + "            \n" + "             %s");
-        statusHeaders.put(500, "HTTP/1.1 500 Internal Server Error\n" + "             Content-Type: text/html\n" + "             Content-Length: %d\n" + "            \n" + "             %s");
+        statusHeaders.put(200, """
+                HTTP/1.1 200 OK
+                Content-Type: text/html
+                Content-Length: %d
+                
+                %s""");
+        statusHeaders.put(403, """
+                HTTP/1.1 403 Forbidden
+                Content-Type: text/html
+                Content-Length: %d
+                
+                %s""");
+        statusHeaders.put(404, """
+                HTTP/1.1 404 Not Found
+                Content-Type: text/html
+                Content-Length: %d
+                
+                %s""");
+        statusHeaders.put(500, """
+                HTTP/1.1 500 Internal Server Error
+                Content-Type: text/html
+                Content-Length: %d
+                
+                %s""");
 
     }
 
 
-    private static boolean checkIfDotBelongsToFigure(int x, float y, int r) {
+    private static boolean checkIfDotBelongsToFigure(int x, float y, float r) {
         // окружность
         if (x >= 0 && y >= 0 && (x * x + y * y <= r * r)) return true;
 
         // треугольник
-        if ((float) (x + 1 + r) / 2 <= y && x <= 0 && y >= 0) return true;
+        if (((x + r)) /2 >= y && x <= 0 && y >= 0) return true;
 
         // прямоугольник
-        if (y <= 0 && x >= -r && x <= 0 && y >= (float) -r /2) return true;
+        if (y <= 0 && x >= -r && x <= 0 && y >= (float) -r / 2) return true;
 
         return false;
     }
@@ -53,7 +75,7 @@ public class Main {
 
     public static void main(String[] args) {
         initHeaders();
-
+        System.out.println(res(500, "{hi"));
         var fcgiInterface = new FCGIInterface();
         while (fcgiInterface.FCGIaccept() >= 0) {
             LocalDate requestGotTime = LocalDate.now();
@@ -68,8 +90,7 @@ public class Main {
 
                 int x = Integer.parseInt(xyr_data[0]);
                 float y = Float.parseFloat(xyr_data[1]);
-                int r = Integer.parseInt(xyr_data[2]);
-
+                float r = Float.parseFloat(xyr_data[2]);
 
 
                 String intersects = "Нет";
@@ -77,12 +98,13 @@ public class Main {
 
 
                 content = """
-                        {\"intersects\": \"%s\", \"exec_time\": \"%s\", \"exec_date\": \"%s\"}
+                        {\"intersects\": \"%s\", \"exec_time\": \"%s\", \"exec_date\": \"%s\", \"x\": \"empty_field\"}
                         """.formatted(intersects, (System.nanoTime() - startTime), requestGotTime.toString());
+                System.out.println(res(200, content));
             } catch (IOException e) {
-                System.out.println(res(500, "Something bad happened."));
+                System.out.println(res(500, "{\"message\": \"Something bad happened.\"}"));
+                continue;
             }
-            System.out.println(res(200, content));
         }
     }
 }

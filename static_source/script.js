@@ -48,7 +48,7 @@ function addTableRow(hitObject) {
     const newRow = document.createElement('tr');
 
     newRow.innerHTML = `
-        <td>${hitObject.idx}</td>
+        <td>${hitObject.idx + 1}</td>
         <td>${hitObject.x}</td>
         <td>${hitObject.y}</td>
         <td>${hitObject.r}</td>
@@ -75,12 +75,13 @@ function getPageContent(pageNum) {
 
 function setTableContent(pageNum) {
     if (pageNum < 0) return;
+    if (lastHitIdx === 0) return;
 
     const tableBody = document.querySelector("#resultTable tbody");
     tableBody.innerHTML = ''; // clear table
 
     const content = getPageContent(pageNum);
-    for (let i = content.length; i >= 0; i--)
+    for (let i = content.length - 1; i >= 0; i--)
         addTableRow(content[i]);
     // content.forEach((hitObject) => addTableRow(hitObject));
 }
@@ -149,13 +150,9 @@ $(document).ready(function () {
         const y = $("#y").val();
         const r = $("#r").val();
 
-        const regex = /^-?\d+(\.\d+)?$/;
+        const regex = /^[+-]?\d+(\.\d+)?$/;
 
-        if (!regex.test(x))
-            return;
         if (!regex.test(y))
-            return;
-        if (regex.test(r))
             return;
 
         $.ajax({
