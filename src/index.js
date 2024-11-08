@@ -161,6 +161,9 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
+    $('.pagination-btn#prevPage').on('click', prevPage);
+    $('.pagination-btn#nextPage').on('click', nextPage);
+
     $("#coordinateForm").on("submit", function (event) {
         event.preventDefault();
 
@@ -174,6 +177,9 @@ $(document).ready(function () {
             window.toast.error("Неверный ввод");
             return;
         }
+
+        if (parseFloat(y) < -3 || parseFloat(y) > 5)
+            return;
 
         $.ajax({
             url: "/fcgi-bin/fast-cgi-timmie.jar",
@@ -191,8 +197,8 @@ $(document).ready(function () {
                     setTableContent(pageNumber);
                     return;
                 }
-                pageNumber++;
                 addToStorage(hitObject);
+                pageNumber = Math.floor(lastHitIdx / 10);
                 setTableContent(pageNumber);
                 document.getElementById('pageNum').innerText = pageNumber + 1;
             },
